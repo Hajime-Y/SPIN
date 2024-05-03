@@ -12,6 +12,7 @@ def setup_arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output_dir', type=str, default='reformatted')
     parser.add_argument('--data', type=str, default='HuggingFaceH4/ultrachat_200k')
+    parser.add_argument('--data_version', type=str, default='')
     return parser.parse_args()
 
 
@@ -43,6 +44,28 @@ def load_and_process_data_tulu(dataset_name, input_split, test_split: float=0.1)
     except Exception as e:
         logging.error(f"Error loading or processing dataset: {e}")
         return []
+    
+# Hachi-Aplaca
+def create_prompts(instruction, input=""):
+    return f"{instruction}\n\n{input}" if input else instruction
+
+# Hachi-Aplaca
+def load_and_process_data_hachi_alpaca(dataset_name, input_split, test_split: float=0.1):
+    try:
+        dataset = load_dataset(dataset_name, split=input_split)
+        dataset = dataset.train_test_split(test_size=test_split)
+        reformatted_train_data = [{
+            'generated': [{"role": "user", "content": create_prompts(message['instruction'], message['input'])}, {"role": "assistant", "content": ""}], 
+            'real': [{"role": "user", "content": create_prompts(message['instruction'], message['input'])}, {"role": "assistant", "content": message['output']}]
+        } for message in dataset["train"]]
+        reformatted_test_data = [{
+            'generated': [{"role": "user", "content": create_prompts(message['instruction'], message['input'])}, {"role": "assistant", "content": ""}], 
+            'real': [{"role": "user", "content": create_prompts(message['instruction'], message['input'])}, {"role": "assistant", "content": message['output']}]
+        } for message in dataset["test"]]
+        return reformatted_train_data, reformatted_test_data
+    except Exception as e:
+        logging.error(f"Error loading or processing dataset: {e}")
+        return []
 
 def save_to_json(data, path):
     try:
@@ -67,6 +90,8 @@ def main():
         test_data = load_and_process_data_ultrachat(args.data, 'test_sft')
     elif "tulu-v2-sft-mixture" in args.data:
         train_data, test_data = load_and_process_data_tulu(args.data, 'train', test_split=0.1)
+    elif "Hachi-Alpaca" in args.data:
+        train_data, test_data = load_and_process_data_tulu(args.data, args.data_version, test_split=0.1)
     else:
         raise ValueError(f"current {args.data} dataset is not supported")
 
