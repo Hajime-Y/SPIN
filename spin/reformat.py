@@ -91,7 +91,7 @@ def main():
     elif "tulu-v2-sft-mixture" in args.data:
         train_data, test_data = load_and_process_data_tulu(args.data, 'train', test_split=0.1)
     elif "Hachi-Alpaca" in args.data:
-        train_data, test_data = load_and_process_data_tulu(args.data, args.data_version, test_split=0.1)
+        train_data, test_data = load_and_process_data_hachi_alpaca(args.data, args.data_version, test_split=0.1)
     else:
         raise ValueError(f"current {args.data} dataset is not supported")
 
