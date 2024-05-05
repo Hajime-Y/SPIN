@@ -165,3 +165,7 @@ wandb/
 reformatted/
 data/
 outputs/
+new_data/
+
+# Mac
+.DS_Store
