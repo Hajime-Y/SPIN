@@ -1,6 +1,17 @@
 # Model arguments
 model_name_or_path: HachiML/Swallow-MS-7b-instruct-v0.1
 model_revision: 5f7af8e743dc6d982137a5889472e97d4f449fb8
+use_peft: true
+r: 64
+lora_alpha: 16
+lora_dropout: 0.1
+bias: "none"
+task_type: "CAUSAL_LM"
+target_modules: 
+- "q_proj"
+- "k_proj"
+- "v_proj"
+- "o_proj"
 
 # Data training arguments
 dataset_mixer:
