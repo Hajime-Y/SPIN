@@ -202,6 +202,9 @@ class SPINTrainer(Trainer):
 
             # get peft model with the given config
             model = get_peft_model(model, peft_config)
+            print("＝＝＝＝＝＝＝＝＝＝＝＝＝")
+            print("Peft Model is loaded!")
+            print("＝＝＝＝＝＝＝＝＝＝＝＝＝")
 
         # For models that use gradient_checkpointing, we need to attach a hook that enables input
         # to explicitly have `requires_grad=True`, otherwise training will either silently
